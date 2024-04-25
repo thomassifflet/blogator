@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -19,8 +18,7 @@ type Feed struct {
 	UserID    uuid.UUID `json:"user_id"`
 }
 
-func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request) {
-	ctx := context.Background()
+func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request, user database.User) {
 
 	type parameters struct {
 		Name string `json:"name"`
@@ -38,7 +36,7 @@ func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	feedDb, err := cfg.DB.CreateFeed(ctx, database.CreateFeedParams{
+	feedDb, err := cfg.DB.CreateFeed(r.Context(), database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -57,7 +55,7 @@ func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request) 
 			UpdatedAt: feedDb.UpdatedAt,
 			Name:      feedDb.Name,
 			URL:       feedDb.Url,
-			UserID:    feedDb.UserID,
+			UserID:    user.ID,
 		},
 	})
 }
