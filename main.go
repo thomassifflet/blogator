@@ -41,14 +41,8 @@ func main() {
 		DB: dbQueries,
 	}
 
-	fsHandler := http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))
-	srv := &http.Server{
-		Addr: ":" + port,
-	}
-
 	r := mux.NewRouter()
 	r.Use(mux.CORSMethodMiddleware(r))
-	r.Handle("/app/*", fsHandler)
 	r.HandleFunc("/v1/users", apiCfg.handlerCreateUser).Methods("POST")
 	r.HandleFunc("/v1/users", apiCfg.middlewareAuth(apiCfg.handlerGetUser)).Methods("GET")
 	r.HandleFunc("/v1/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed)).Methods("POST")
@@ -56,5 +50,5 @@ func main() {
 	r.HandleFunc("/v1/err", handlerErr).Methods("GET")
 
 	log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
-	log.Fatal(srv.ListenAndServe())
+	log.Fatal(http.ListenAndServe(port, r))
 }

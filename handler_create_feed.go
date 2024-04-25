@@ -42,6 +42,7 @@ func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request, 
 		UpdatedAt: time.Now(),
 		Name:      params.Name,
 		Url:       params.URL,
+		UserID:    user.ID,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
