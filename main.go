@@ -49,6 +49,9 @@ func main() {
 	r.HandleFunc("/v1/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed)).Methods("POST")
 	r.HandleFunc("/v1/readiness", handlerReadiness).Methods("GET")
 	r.HandleFunc("/v1/err", handlerErr).Methods("GET")
+	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsCreate)).Methods("POST")
+	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsGet)).Methods("GET")
+	r.HandleFunc("/v1/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowDelete)).Methods("DELETE")
 
 	log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
 	log.Fatal(http.ListenAndServe(port, r))
