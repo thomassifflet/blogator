@@ -8,7 +8,7 @@ CREATE TABLE feeds(
     user_id UUID NOT NULL,
     CONSTRAINT feed_fk
     FOREIGN KEY (user_id)
-    REFERENCES users(id)
+    REFERENCES users(id) ON DELETE CASCADE
 );
 -- +goose Down
 DROP TABLE feeds;
