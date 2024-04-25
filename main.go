@@ -45,6 +45,7 @@ func main() {
 	r.Use(mux.CORSMethodMiddleware(r))
 	r.HandleFunc("/v1/users", apiCfg.handlerCreateUser).Methods("POST")
 	r.HandleFunc("/v1/users", apiCfg.middlewareAuth(apiCfg.handlerGetUser)).Methods("GET")
+	r.HandleFunc("/v1/feeds", apiCfg.handlerGetFeeds).Methods("GET")
 	r.HandleFunc("/v1/feeds", apiCfg.middlewareAuth(apiCfg.handlerCreateFeed)).Methods("POST")
 	r.HandleFunc("/v1/readiness", handlerReadiness).Methods("GET")
 	r.HandleFunc("/v1/err", handlerErr).Methods("GET")

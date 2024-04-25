@@ -1,14 +1,12 @@
 package main
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/thomassifflet/blogator/internal/database"
 )
 
 func (cfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
-	ctx := context.Background()
 	type response struct {
 		User
 	}
@@ -19,7 +17,7 @@ func (cfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, use
 		return
 	}
 
-	userByKey, err := cfg.DB.GetUserByAPIKey(ctx, authString)
+	userByKey, err := cfg.DB.GetUserByAPIKey(r.Context(), authString)
 	if err != nil {
 		respondWithError(w, 500, "couldn't retrieve user")
 		return
