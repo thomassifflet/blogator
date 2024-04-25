@@ -4,16 +4,16 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/thomassifflet/blogator/auth"
+	"github.com/thomassifflet/blogator/internal/database"
 )
 
-func (cfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request, user database.User) {
 	ctx := context.Background()
 	type response struct {
 		User
 	}
 
-	authString, err := auth.GetAPIKey(r.Header)
+	authString, err := GetAPIKey(r.Header)
 	if err != nil {
 		respondWithError(w, 500, "no api key provided")
 		return

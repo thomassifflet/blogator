@@ -10,22 +10,24 @@ import (
 	"github.com/thomassifflet/blogator/internal/database"
 )
 
-type User struct {
+type Feed struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Name      string    `json:"name"`
-	ApiKey    string    `json:"api_key"`
+	URL       string    `json:"url"`
+	UserID    uuid.UUID `json:"user_id"`
 }
 
-func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerCreateFeed(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	type parameters struct {
 		Name string `json:"name"`
+		URL  string `json:"url"`
 	}
 	type response struct {
-		User
+		Feed
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -36,11 +38,12 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	userDb, err := cfg.DB.CreateUser(ctx, database.CreateUserParams{
+	feedDb, err := cfg.DB.CreateFeed(ctx, database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      params.Name,
+		Url:       params.URL,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user")
@@ -48,11 +51,13 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 	}
 
 	respondWithJSON(w, http.StatusCreated, response{
-		User: User{
-			ID:        userDb.ID,
-			CreatedAt: userDb.CreatedAt,
-			UpdatedAt: userDb.UpdatedAt,
-			Name:      userDb.Name,
+		Feed: Feed{
+			ID:        feedDb.ID,
+			CreatedAt: feedDb.CreatedAt,
+			UpdatedAt: feedDb.UpdatedAt,
+			Name:      feedDb.Name,
+			URL:       feedDb.Url,
+			UserID:    feedDb.UserID,
 		},
 	})
 }
