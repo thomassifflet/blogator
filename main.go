@@ -53,7 +53,7 @@ func main() {
 	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsCreate)).Methods("POST")
 	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsGet)).Methods("GET")
 	r.HandleFunc("/v1/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowDelete)).Methods("DELETE")
-
+	r.HandleFunc(" /v1/posts", apiCfg.middlewareAuth(apiCfg.handlerPostsGet)).Methods("GET")
 	const collectionConcurrency = 10
 	const collectionInterval = time.Minute
 	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
