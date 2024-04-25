@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -52,6 +53,10 @@ func main() {
 	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsCreate)).Methods("POST")
 	r.HandleFunc("/v1/feed_follows", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowsGet)).Methods("GET")
 	r.HandleFunc("/v1/feed_follows/{feedFollowID}", apiCfg.middlewareAuth(apiCfg.handlerFeedFollowDelete)).Methods("DELETE")
+
+	const collectionConcurrency = 10
+	const collectionInterval = time.Minute
+	go startScraping(dbQueries, collectionConcurrency, collectionInterval)
 
 	log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
 	log.Fatal(http.ListenAndServe(port, r))
